@@ -3,7 +3,7 @@ package com.oosic.jiepang.Constants;
 public class JiePangContants {
 	public static final String APPID = "100989";
 	public static final String APPSECRET = "a9875016647fc6f64d785bb1684374fc";
-	//Test Mac Upload 
+	
 	
 	//Implicit Grant
 	public static final String OAUTH_PATH = "https://jiepang.com/oauth/authorize";

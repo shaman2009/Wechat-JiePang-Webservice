@@ -1,6 +1,7 @@
 package com.oosic.jiepang.util;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,16 +12,24 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
+import com.oosic.jiepang.Constants.JiePangContants;
+
 public class HttpClientTest {
 	public static void main(String[] args) throws Exception {
+		String responseContent = "";
+		URIBuilder builder = new URIBuilder();
+		builder.setScheme("http").setHost(JiePangContants.JIEPANG_HOST).setPath("/v1/locations/show")
+		    .setParameter("guid", "0D77229CC1F58952")
+		    .setParameter("access_token", "100989-430454603-a2c50c5bfd6da5043ea7c0e1fa049ddd");
+		URI uri = builder.build();
 		DefaultHttpClient httpclient = new DefaultHttpClient();
-		HttpGet httpGet = new HttpGet("http://weibo.com");
-
-		HttpResponse response1 = httpclient.execute(httpGet);
+		HttpGet httpGet = new HttpGet(uri);
+		HttpResponse response = httpclient.execute(httpGet);
 
 		// The underlying HTTP connection is still held by the response object
 		// to allow the response content to be streamed directly from the
@@ -31,11 +40,17 @@ public class HttpClientTest {
 		// execution by calling HttpGet#releaseConnection().
 
 		try {
-			System.out.println(response1.getStatusLine());
-			HttpEntity entity1 = response1.getEntity();
+			System.out.println(response.getStatusLine());
+			HttpEntity entity = response.getEntity();
 			// do something useful with the response body
 			// and ensure it is fully consumed
-			EntityUtils.consume(entity1);
+
+			if (null != entity) {
+				responseContent = EntityUtils.toString(entity, "UTF-8");
+				EntityUtils.consume(entity); // Consume response content
+			}
+			System.out.println(responseContent);
+			
 		} finally {
 			httpGet.releaseConnection();
 		}
